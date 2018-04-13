@@ -3,10 +3,10 @@ swagger: "2.0"
 info:
   version: "v0.1"
   title: "PANTHER-Enrichment"
-# host: "panthertest2.usc.edu"
-# basePath: "/services/overrepresentation/overrep.jsp?"
-# schemes:
-# - "http"
+host: "panthertest2.usc.edu"
+basePath: "/services/overrepresentation/overrep.jsp?"
+schemes:
+- "http"
 paths:
   /:
     get:
@@ -40,6 +40,7 @@ paths:
           \ the browser to PANTHER overrepresentation result page. "
         required: false
         type: "string"
+        default: "json"
       - name: "geneInputList"
         in: "query"
         description: "Each identifier to be delimited by newline.  Maximum of 1000\
@@ -277,11 +278,3 @@ x-amazon-apigateway-documentation:
       description: "This parameter is optional.  It is valid only if parameter 'refInputList'\
         \ has been specified.  NCBI taxon id for PANTHER supported organisms.  Example\
         \ 9606 for Homo sapiens"
-# Added by API Auto Mocking Plugin
-host: virtserver.swaggerhub.com
-# basePath: /geneontology/gsea/v0.1
-schemes:
- - https
- - http
-# Added by API Auto Mocking Plugin
-basePath: /geneontology/enrichment/v0.1
