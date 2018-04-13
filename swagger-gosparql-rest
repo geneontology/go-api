@@ -1,0 +1,850 @@
+---
+swagger: "2.0"
+info:
+  version: "alpha"
+  title: "gosparql-rest"
+host: "ipgc7a2b2e.execute-api.us-east-2.amazonaws.com"
+basePath: "/gocamv3"
+schemes:
+- "https"
+paths:
+  /models:
+    get:
+      description: "Return the current list of GO-CAMs"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/ModelList"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n#set($originalParams\
+                \ = $input.params()) \n$response"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"models\")\n{ \n    \"resource\": \"\
+            $resource\"\n}"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /models/annotatedlist:
+    get:
+      description: "Return the annotated list of GO-CAMs"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/AnnotatedModelList"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n$response"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"models\")\n#set($parameter = \"annotatedlist\"\
+            )\n{ \n    \"resource\": \"$resource\",\n    \"parameter\": \"$parameter\"\
+            \n}\n"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /models/last/{number}:
+    get:
+      description: "Return the {number} lastly created or edited GO-CAMs"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "number"
+        in: "path"
+        description: "The number of GO-CAMs to retrieve (e.g. 2, 3, 4...)"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/AnnotatedModelList"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n$response"
+        requestParameters:
+          integration.request.path.number: "method.request.path.number"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"models\")\n#set($parameter = \"last\"\
+            )\n#set($params = $input.params()) \n{ \n    \"resource\": \"$resource\"\
+            ,\n    \"parameter\": \"$parameter\",\n    \"property\": \"$params.path.number\"\
+            \ \n}"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /models/{parameter}:
+    get:
+      description: "Return all the biological statements for a specific GO-CAM"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "parameter"
+        in: "path"
+        description: "A GO-CAM model id (e.g. 581e072c00000820, 581e072c00000295,\
+          \ 5900dc7400000968, ...)"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/ModelList"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n#set($originalParams\
+                \ = $input.params()) \n$response"
+        requestParameters:
+          integration.request.path.parameter: "method.request.path.parameter"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"models\")\n#set($params = $input.params())\
+            \ \n{ \n    \"resource\": \"$resource\",\n    \"parameter\": \"$params.path.parameter\"\
+            \ \n}"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /models/{parameter}/bp:
+    get:
+      description: "Return the Biological Processes (BP) of a specific GO-CAM"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "parameter"
+        in: "path"
+        description: "A GO-CAM model id (e.g. 581e072c00000820, 581e072c00000295,\
+          \ 5900dc7400000968, ...)"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/GO"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n$response\n"
+        requestParameters:
+          integration.request.path.parameter: "method.request.path.parameter"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"models\")\n#set($property = \"bp\"\
+            )\n#set($params = $input.params()) \n{ \n    \"resource\": \"$resource\"\
+            ,\n    \"property\": \"$property\",\n    \"parameter\": \"$params.path.parameter\"\
+            \ \n}"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /models/{parameter}/cc:
+    get:
+      description: "Return the Cellular Component (CC) of a specific GO-CAM"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "parameter"
+        in: "path"
+        description: "A GO-CAM model id (e.g. 581e072c00000820, 581e072c00000295,\
+          \ 5900dc7400000968, ...)"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/GO"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n$response\n"
+        requestParameters:
+          integration.request.path.parameter: "method.request.path.parameter"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"models\")\n#set($property = \"cc\"\
+            )\n#set($params = $input.params()) \n{ \n    \"resource\": \"$resource\"\
+            ,\n    \"property\": \"$property\",\n    \"parameter\": \"$params.path.parameter\"\
+            \ \n}"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /models/{parameter}/contributors:
+    get:
+      description: "Return the list of contributors of a specific GO-CAM"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "parameter"
+        in: "path"
+        description: "A GO-CAM model id (e.g. 581e072c00000820, 581e072c00000295,\
+          \ 5900dc7400000968, ...)"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/ModelContributors"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n#set($originalParams\
+                \ = $input.params()) \n$response"
+        requestParameters:
+          integration.request.path.parameter: "method.request.path.parameter"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"models\")\n#set($property = \"contributors\"\
+            )\n#set($params = $input.params()) \n{ \n    \"resource\": \"$resource\"\
+            ,\n    \"property\": \"$property\",\n    \"parameter\": \"$params.path.parameter\"\
+            \ \n}"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /models/{parameter}/geneproducts:
+    get:
+      description: "Return the list of gene products for a specific GO-CAM"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "parameter"
+        in: "path"
+        description: "A GO-CAM model id (e.g. 581e072c00000820, 581e072c00000295,\
+          \ 5900dc7400000968, ...)"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/ModelGeneProducts"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n#set($originalParams\
+                \ = $input.params()) \n$response"
+        requestParameters:
+          integration.request.path.parameter: "method.request.path.parameter"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"models\")\n#set($property = \"geneproducts\"\
+            )\n#set($params = $input.params()) \n{ \n    \"resource\": \"$resource\"\
+            ,\n    \"property\": \"$property\",\n    \"parameter\": \"$params.path.parameter\"\
+            \ \n}"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /models/{parameter}/go:
+    get:
+      description: "Return the GO terms used in a specific GO-CAM"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "parameter"
+        in: "path"
+        description: "A GO-CAM model id (e.g. 581e072c00000820, 581e072c00000295,\
+          \ 5900dc7400000968, ...)"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/GOUsage"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n$response\n"
+        requestParameters:
+          integration.request.path.parameter: "method.request.path.parameter"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"models\")\n#set($property = \"go\"\
+            )\n#set($params = $input.params()) \n{ \n    \"resource\": \"$resource\"\
+            ,\n    \"property\": \"$property\",\n    \"parameter\": \"$params.path.parameter\"\
+            \ \n}"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /models/{parameter}/mf:
+    get:
+      description: "Return the Molecular Functions (MF) of a specific GO-CAM"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "parameter"
+        in: "path"
+        description: "A GO-CAM model id (e.g. 581e072c00000820, 581e072c00000295,\
+          \ 5900dc7400000968, ...)"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/GO"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n$response\n"
+        requestParameters:
+          integration.request.path.parameter: "method.request.path.parameter"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"models\")\n#set($property = \"mf\"\
+            )\n#set($params = $input.params()) \n{ \n    \"resource\": \"$resource\"\
+            ,\n    \"property\": \"$property\",\n    \"parameter\": \"$params.path.parameter\"\
+            \ \n}"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /models/{parameter}/relations:
+    get:
+      description: "Return the list of relationships for a specific GO-CAM"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "parameter"
+        in: "path"
+        description: "A GO-CAM model id (e.g. 581e072c00000820, 581e072c00000295,\
+          \ 5900dc7400000968, ...)"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/ModelRelations"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n#set($originalParams\
+                \ = $input.params()) \n$response"
+        requestParameters:
+          integration.request.path.parameter: "method.request.path.parameter"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"models\")\n#set($property = \"relations\"\
+            )\n#set($params = $input.params()) \n{ \n    \"resource\": \"$resource\"\
+            ,\n    \"property\": \"$property\",\n    \"parameter\": \"$params.path.parameter\"\
+            \ \n}"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /models/{parameter}/stats:
+    get:
+      description: "Return some statistics for a specific GO-CAM"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "parameter"
+        in: "path"
+        description: "A GO-CAM model id (e.g. 581e072c00000820, 581e072c00000295,\
+          \ 5900dc7400000968, ...)"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/ModelStats"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n#set($originalParams\
+                \ = $input.params()) \n$response"
+        requestParameters:
+          integration.request.path.parameter: "method.request.path.parameter"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"models\")\n#set($property = \"stats\"\
+            )\n#set($params = $input.params()) \n{ \n    \"resource\": \"$resource\"\
+            ,\n    \"property\": \"$property\",\n    \"parameter\": \"$params.path.parameter\"\
+            \ \n}"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /users:
+    get:
+      description: "Return the list of users (contributors) of GO-CAMs"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/UserList"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n$response"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"users\")\n{ \n    \"resource\": \"\
+            $resource\"\n}\n"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /users/{user}:
+    get:
+      description: "Return the metadata of a specific user/contributor"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user"
+        in: "path"
+        description: "A user/contributor ORCID id (e.g. 0000-0001-5501-853X, 0000-0001-7476-6306,\
+          \ 0000-0003-1074-8103, ...)"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/User"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n$response"
+        requestParameters:
+          integration.request.path.user: "method.request.path.user"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"users\")\n#set($params = $input.params())\
+            \ \n{ \n    \"resource\": \"$resource\",\n    \"parameter\": \"$params.path.user\"\
+            \ \n}\n"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /users/{user}/models:
+    get:
+      description: "Return the list of GO-CAMs produced by a given user"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user"
+        in: "path"
+        description: "A user/contributor ORCID id (e.g. 0000-0001-5501-853X, 0000-0001-7476-6306,\
+          \ 0000-0003-1074-8103, ...)"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/UserModelList"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:709327699357:function:gosparql-restv2/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n$response"
+        requestParameters:
+          integration.request.path.user: "method.request.path.user"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($resource = \"users\")\n#set($property = \"models\"\
+            )\n#set($params = $input.params()) \n{ \n    \"resource\": \"$resource\"\
+            ,\n    \"property\": \"$property\",\n    \"parameter\": \"$params.path.user\"\
+            \ \n}\n"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+definitions:
+  ModelList:
+    title: "ModelList"
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        gocam:
+          type: "string"
+        date:
+          type: "string"
+        title:
+          type: "string"
+  AnnotatedModelList:
+    title: "AnnotatedModelList"
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        gocam:
+          type: "string"
+        date:
+          type: "string"
+        title:
+          type: "string"
+        orcids:
+          type: "array"
+          items:
+            type: "string"
+        names:
+          type: "array"
+          items:
+            type: "string"
+  Empty:
+    type: "object"
+    title: "Empty Schema"
+  ModelContributors:
+    title: "ModelContributors"
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        orcid:
+          type: "string"
+        name:
+          type: "string"
+        providersURL:
+          type: "array"
+          items:
+            type: "string"
+        providersName:
+          type: "array"
+          items:
+            type: "string"
+        organizations:
+          type: "array"
+          items:
+            type: "string"
+        affiliations:
+          type: "array"
+          items:
+            type: "string"
+  ModelRelations:
+    title: "ModelRelations"
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        relationURI:
+          type: "string"
+        relationLabel:
+          type: "string"
+        usages:
+          type: "integer"
+  User:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      organization:
+        type: "array"
+        items:
+          type: "string"
+      affiliation:
+        type: "array"
+        items:
+          type: "string"
+      gocams:
+        type: "integer"
+    title: "User"
+  GOUsage:
+    type: "object"
+    properties:
+      go:
+        type: "string"
+      type:
+        type: "string"
+      label:
+        type: "string"
+      usages:
+        type: "integer"
+    title: "GOUsage"
+  ModelGeneProducts:
+    title: "ModelGeneProducts"
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        identifier:
+          type: "string"
+        oboid:
+          type: "string"
+        name:
+          type: "string"
+        taxon:
+          type: "string"
+        species:
+          type: "string"
+        usages:
+          type: "integer"
+  ModelStats:
+    type: "object"
+    properties:
+      nbTriples:
+        type: "integer"
+      nbRelations:
+        type: "integer"
+    title: "ModelStats"
+  GO:
+    type: "object"
+    properties:
+      go:
+        type: "string"
+      type:
+        type: "string"
+      label:
+        type: "string"
+    title: "GO"
+  UserList:
+    title: "UserList"
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        orcid:
+          type: "string"
+        name:
+          type: "string"
+        organizations:
+          type: "array"
+          items:
+            type: "string"
+        affiliations:
+          type: "array"
+          items:
+            type: "string"
+        gocams:
+          type: "integer"
+  UserModelList:
+    title: "UserModelList"
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        gocam:
+          type: "string"
+        date:
+          type: "string"
+        title:
+          type: "string"
+x-amazon-apigateway-documentation:
+  version: "v0.37"
+  createdDate: "2018-04-11T08:33:02Z"
+  documentationParts:
+  - location:
+      type: "API"
+    properties:
+      description: "GO-CAM REST API, forwarding data from the SPARQL endpoint (http://rdf.geneontology.org/blazegraph/sparql)"
+  - location:
+      type: "METHOD"
+      path: "/models/annotatedlist"
+      method: "GET"
+    properties:
+      description: "Return the annotated list of GO-CAMs"
+  - location:
+      type: "METHOD"
+      path: "/models/last/{number}"
+      method: "GET"
+    properties:
+      description: "Return the {number} lastly created or edited GO-CAMs"
+  - location:
+      type: "METHOD"
+      path: "/models/{parameter}/biologicalprocess"
+      method: "GET"
+    properties:
+      description: "Return the biological processes (BP) of a specific GO-CAM"
+  - location:
+      type: "METHOD"
+      path: "/models/{parameter}/bp"
+      method: "GET"
+    properties:
+      description: "Return the Biological Processes (BP) of a specific GO-CAM"
+  - location:
+      type: "METHOD"
+      path: "/models/{parameter}/cc"
+      method: "GET"
+    properties:
+      description: "Return the Cellular Component (CC) of a specific GO-CAM"
+  - location:
+      type: "METHOD"
+      path: "/models/{parameter}/contributors"
+      method: "GET"
+    properties:
+      description: "Return the list of contributors of a specific GO-CAM"
+  - location:
+      type: "METHOD"
+      path: "/models/{parameter}/geneproducts"
+      method: "GET"
+    properties:
+      description: "Return the list of gene products for a specific GO-CAM"
+  - location:
+      type: "METHOD"
+      path: "/models/{parameter}/go"
+      method: "GET"
+    properties:
+      description: "Return the GO terms used in a specific GO-CAM"
+  - location:
+      type: "METHOD"
+      path: "/models/{parameter}/mf"
+      method: "GET"
+    properties:
+      description: "Return the Molecular Functions (MF) of a specific GO-CAM"
+  - location:
+      type: "METHOD"
+      path: "/models/{parameter}/relations"
+      method: "GET"
+    properties:
+      description: "Return the list of relationships for a specific GO-CAM"
+  - location:
+      type: "METHOD"
+      path: "/models/{parameter}/stats"
+      method: "GET"
+    properties:
+      description: "Return some statistics for a specific GO-CAM"
+  - location:
+      type: "METHOD"
+      path: "/models/{parameter}"
+      method: "GET"
+    properties:
+      description: "Return all the biological statements for a specific GO-CAM"
+  - location:
+      type: "METHOD"
+      path: "/models"
+      method: "GET"
+    properties:
+      description: "Return the current list of GO-CAMs"
+  - location:
+      type: "METHOD"
+      path: "/users/{user}/models"
+      method: "GET"
+    properties:
+      description: "Return the list of GO-CAMs produced by a given user"
+  - location:
+      type: "METHOD"
+      path: "/users/{user}"
+      method: "GET"
+    properties:
+      description: "Return the metadata of a specific user/contributor"
+  - location:
+      type: "METHOD"
+      path: "/users"
+      method: "GET"
+    properties:
+      description: "Return the list of users (contributors) of GO-CAMs"
+  - location:
+      type: "PATH_PARAMETER"
+      path: "/models/last/{number}"
+      method: "*"
+      name: "number"
+    properties:
+      description: "The number of GO-CAMs to retrieve"
+  - location:
+      type: "PATH_PARAMETER"
+      path: "/models/last/{number}"
+      method: "OPTIONS"
+      name: "number"
+    properties:
+      description: "The number of GO-CAMs to retrieve"
+  - location:
+      type: "PATH_PARAMETER"
+      path: "/models/{parameter}"
+      method: "*"
+      name: "parameter"
+    properties:
+      description: "A GO-CAM model id (e.g. 581e072c00000820, 581e072c00000295, 5900dc7400000968,\
+        \ ...)"
+  - location:
+      type: "PATH_PARAMETER"
+      path: "/users/{user}"
+      method: "*"
+      name: "user"
+    properties:
+      description: "A user/contributor ORCID id (e.g. 0000-0001-5501-853X, 0000-0001-7476-6306,\
+        \ 0000-0003-1074-8103, ...)"
