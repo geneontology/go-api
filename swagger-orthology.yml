@@ -1,0 +1,94 @@
+openapi: 3.0.1
+info:
+  title: PANTHER ortholog service
+  description: |-
+    The ortholog web service can be used to search for matching orthologs in target organisms. The system searches for matching orthologs in the gene family that contains the search gene associated with the search terms. The matching ortholog web service returns ortholog genes in target organisms given a search organism, the search terms and a list of target organisms.
+    It is recommended that response from previous web service request is received before sending a new request.  Failure to comply with this policy may result in the IP address being blocked from accessing PANTHER.
+  version: "1.1"
+servers: 
+  - url: http://panthertest2.usc.edu/services/
+paths:
+  /ortholog/matchOrtho.jsp:
+    description: URL for accessing ortholog web service
+    post:
+      parameters:
+        - name: geneInputList
+          in: query
+          description: 'Each identifier to be delimited by newline.  Maximum of 10 Identifiers. Can be any of the following:  Ensemble gene idenfifier, Ensemble protein identifier, Ensemble transcript identifier, Entrez gene id, gene symbol, NCBI GI, HGNC Id, International protein index id, NCBI UniGene id, UniProt accession, UniProt id'
+          required: true
+          schema:
+            type: string
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: json
+        - name: organism
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: Get list of supported taxon ids from /services/supportedGenomes/
+            format: int32
+        - name: targetOrganism
+          in: query
+          required: true
+          schema:
+            minItems: 1
+            type: array
+            items:
+              type: integer
+              description: Get list of supported taxon ids from /services/supportedGenomes/
+              format: int32
+          style: form
+          explode: false
+        - name: orthologType
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - LDO
+              - all
+      responses:
+        '200':
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                properties:
+                  search_type:
+                    type: string
+                  product:
+                    properties:
+                      content:
+                        type: string
+                      version:
+                        type: string
+                  mapping:
+                    properties:
+                      unmapped_ids:
+                        type: array
+                        enum:
+                          - properties:
+                              id:
+                                type: string
+                              organism:
+                                type: string
+                      mapped:
+                        type: array
+                        properties:
+                          id:
+                            type: string
+                          target_gene:
+                            type: string
+                          gene:
+                            type: string
+                          ortholog:
+                            type: string
+                          target_gene_symbol:
+                            type: string
