@@ -6,7 +6,7 @@ info:
     It is recommended that response from previous web service request is received before sending a new request.  Failure to comply with this policy may result in the IP address being blocked from accessing PANTHER.
   version: "1.1"
 servers: 
-  - url: http://panthertest2.usc.edu/services/
+  - url: http://panthertest2.usc.edu/services
 paths:
   /ortholog/matchOrtho.jsp:
     description: URL for accessing ortholog web service
