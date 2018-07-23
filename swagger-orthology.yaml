@@ -29,6 +29,7 @@ paths:
             default: json
         - name: organism
           in: query
+          description: "Taxon ID (e.g. 9606)"
           required: true
           schema:
             type: integer
@@ -36,6 +37,7 @@ paths:
             format: int32
         - name: targetOrganism
           in: query
+          description: "Taxon ID (e.g. 10090, 10090, 83333)"
           required: true
           schema:
             minItems: 1
@@ -52,8 +54,8 @@ paths:
           schema:
             type: string
             enum:
-              - LDO
               - all
+              - LDO
       responses:
         '200':
           description: "successful operation"
