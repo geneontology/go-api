@@ -1,0 +1,445 @@
+---
+swagger: "2.0"
+info:
+  version: "2.2"
+  title: "GO REST API"
+host: "api.geneontology.cloud"
+
+tags:
+- name: "GO Causal Activity Models"
+  description: "Everything about GO-CAMs"
+- name: "GO-Terms"
+  description: "Everything about GO-Terms (WIP)"
+- name: "Gene Products"
+  description: "Everything about Gene Products (WIP)"
+- name: "PMIDs"
+  description: "Everything about PMIDs (WIP)"
+- name: "Users"
+  description: "Everything about Contributing Users"
+- name: "Groups"
+  description: "Everything about Contributing Groups"
+  
+schemes:
+- "https"
+
+paths:
+
+  /go:
+    get:
+      tags:
+      - "GO-Terms"
+      summary: "Return the current list of GO-Terms"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+      deprecated: true
+
+  /go/{id}:
+    get:
+      tags:
+      - "GO-Terms"
+      summary: "Return the metadata on a specific GO-Term"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "A GO-Term ID(e.g. GO_0005885, GO_0097136 ...)"
+        required: true
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /go/{id}/hierarchy:
+    get:
+      tags:
+      - "GO-Terms"
+      summary: "Return the children and parents of a specific GO-Term"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "A GO-Term ID(e.g. GO_0005885, GO_0097136 ...)"
+        required: true
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /go/{id}/models:
+    get:
+      tags:
+      - "GO-Terms"
+      summary: "Return the GO-CAMs associated with a given GO-Term"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "A GO-Term ID(e.g. GO_0060070, GO_0000981 ...)"
+        required: true
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /go/{id}/users:
+    get:
+      tags:
+      - "GO-Terms"
+      summary: "Return the Users associated with a given GO-Term"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "A GO-CAM model id (e.g. 581e072c00000820, 581e072c00000295,\
+          \ 5900dc7400000968, ...)"
+        required: true
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+      deprecated: true
+
+              
+  /gp:
+    get:
+      tags:
+      - "Gene Products"
+      summary: "Return the current list of Gene Products"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+      deprecated: true
+
+  /gp/{id}:
+    get:
+      tags:
+      - "Gene Products"
+      summary: "Return the metadata on a specific Gene Product"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "A Gene Product URI (e.g. http://identifiers.org/mgi/MGI:3588192, http://identifiers.org/zfin/ZDB-GENE-000403-1)"
+        required: true
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+      deprecated: true
+
+  /gp/{id}/models:
+    get:
+      tags:
+      - "Gene Products"
+      summary: "Return the GO-CAMs associated with a given Gene Product"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "A Gene Product URI (e.g. http://identifiers.org/mgi/MGI:3588192, http://identifiers.org/zfin/ZDB-GENE-000403-1)"
+        required: true
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /pmid:
+    get:
+      tags:
+      - "PMIDs"
+      summary: "Return the current list of Annotated PMIDs"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+      deprecated: true
+
+  /pmid/{id}:
+    get:
+      tags:
+      - "PMIDs"
+      summary: "Return the metadata on a specific PMID"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "A PMID (e.g. 15314168, 26954676)"
+        required: true
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+      deprecated: true
+
+  /pmid/{id}/models:
+    get:
+      tags:
+      - "PMIDs"
+      summary: "Return the GO-CAMs associated with a given PMID"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "A PMID (e.g. 15314168, 26954676)"
+        required: true
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /groups:
+    get:
+      tags:
+      - "Groups"
+      summary: "Return the current list of Groups contributing to GO"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /groups/{name}:
+    get:
+      tags:
+      - "Groups"
+      summary: "Return the meta data associated with a given Group"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "The name of the Group (e.g. SynGO, GO Central, MGI, ...)"
+        required: true
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /groups/details:
+    get:
+      tags:
+      - "Groups"
+      summary: "Return details associated with  a contributing Group"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "The name of the Group (e.g. SynGO, GO Central, MGI, ...)"
+        required: true
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /models:
+    get:
+      tags:
+      - "GO Causal Activity Models"
+      summary: "Return a list of GO-CAMs"
+      parameters:
+      - name: "last"
+        in: "query"
+        description: "The number of recently published GO-CAMs"
+        type: "string"
+      - name: "start"
+        in: "query"
+        description: "For accessing GO-CAMs by range (start -> start + size)"
+        type: "string"
+      - name: "size"
+        in: "query"
+        description: "For accessing GO-CAMs by range (start -> start + size)"
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /models/go:
+    get:
+      tags:
+      - "GO Causal Activity Models"
+      summary: "Return the GO-Terms associated with all or a set GO-CAMs"
+      parameters:
+      - name: "gocams"
+        in: "query"
+        description: "A list of GO-CAM IDs separated by , (e.g. 59a6110e00000067,SYNGO_369)"
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /models/gp:
+    get:
+      tags:
+      - "GO Causal Activity Models"
+      summary: "Return the Gene Products associated with all or a set GO-CAMs"
+      parameters:
+      - name: "gocams"
+        in: "query"
+        description: "A list of GO-CAM IDs separated by , (e.g. 59a6110e00000067,SYNGO_369)"
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /models/pmid:
+    get:
+      tags:
+      - "GO Causal Activity Models"
+      summary: "Return the PMIDs associated with all or a set GO-CAMs"
+      parameters:
+      - name: "gocams"
+        in: "query"
+        description: "A list of GO-CAM IDs separated by , (e.g. 59a6110e00000067,SYNGO_369)"
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /models/{id}:
+    get:
+      tags:
+      - "GO Causal Activity Models"
+      summary: "Return the meta data associated with a given GO-CAM"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "A GO-CAM model id (e.g. 581e072c00000820, 581e072c00000295,\
+          \ 5900dc7400000968, ...)"
+        required: true
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+    
+  /users:
+    get:
+      tags:
+        - "Users"
+      summary: "Return the current list of Users contributing to GO"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /users/{orcid}:
+    get:
+      tags:
+      - "Users"
+      summary: "Return the meta data associated with a contributing User"
+      parameters:
+      - name: "orcid"
+        in: "path"
+        description: "A user/contributor ORCID id (e.g. 0000-0001-5501-853X, 0000-0001-7476-6306, 0000-0003-1074-8103, ...)"
+        required: true
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /users/{orcid}/gp:
+    get:
+      tags:
+      - "Users"
+      summary: "Return the Gene Products associated with a contributing User"
+      parameters:
+      - name: "orcid"
+        in: "path"
+        description: "A user/contributor ORCID id (e.g. 0000-0001-5501-853X, 0000-0001-7476-6306, 0000-0003-1074-8103, ...)"
+        required: true
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+
+  /users/{orcid}/models:
+    get:
+      tags:
+      - "Users"
+      summary: "Return the GO-CAMs associated with a contributing User"
+      parameters:
+      - name: "orcid"
+        in: "path"
+        description: "A user/contributor ORCID id (e.g. 0000-0001-5501-853X, 0000-0001-7476-6306, 0000-0003-1074-8103, ...)"
+        required: true
+        type: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
