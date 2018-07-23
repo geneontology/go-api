@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: PANTHER ortholog service
+  title: GOC Orthology Service
   description: |-
     The ortholog web service can be used to search for matching orthologs in target organisms. The system searches for matching orthologs in the gene family that contains the search gene associated with the search terms. The matching ortholog web service returns ortholog genes in target organisms given a search organism, the search terms and a list of target organisms.
     It is recommended that response from previous web service request is received before sending a new request.  Failure to comply with this policy may result in the IP address being blocked from accessing PANTHER.
