@@ -1,94 +1,280 @@
-openapi: 3.0.1
+---
+swagger: "2.0"
 info:
-  title: GOC Orthology Service
-  description: |-
-    The ortholog web service can be used to search for matching orthologs in target organisms. The system searches for matching orthologs in the gene family that contains the search gene associated with the search terms. The matching ortholog web service returns ortholog genes in target organisms given a search organism, the search terms and a list of target organisms.
-    It is recommended that response from previous web service request is received before sending a new request.  Failure to comply with this policy may result in the IP address being blocked from accessing PANTHER.
-  version: "1.1"
-servers: 
-  - url: http://panthertest2.usc.edu/services
+  version: "1.0"
+  title: "GOC Enrichment Service"
+host: "panthertest2.usc.edu"
+basePath: "/services"
+schemes:
+- "http"
 paths:
-  /ortholog/matchOrtho.jsp:
-    description: URL for accessing ortholog web service
-    post:
+  /overrepresentation/overrep.jsp:
+    get:
+      description: "Returning the result of an enrichment analysis"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
       parameters:
-        - name: geneInputList
-          in: query
-          description: 'Each identifier to be delimited by newline.  Maximum of 10 Identifiers. Can be any of the following:  Ensemble gene idenfifier, Ensemble protein identifier, Ensemble transcript identifier, Entrez gene id, gene symbol, NCBI GI, HGNC Id, International protein index id, NCBI UniGene id, UniProt accession, UniProt id'
-          required: true
-          schema:
-            type: string
-        - name: format
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - json
-              - xml
-            default: json
-        - name: organism
-          in: query
-          required: true
-          schema:
-            type: integer
-            description: Get list of supported taxon ids from /services/supportedGenomes/
-            format: int32
-        - name: targetOrganism
-          in: query
-          required: true
-          schema:
-            minItems: 1
-            type: array
-            items:
-              type: integer
-              description: Get list of supported taxon ids from /services/supportedGenomes/
-              format: int32
-          style: form
-          explode: false
-        - name: orthologType
-          in: query
-          required: true
-          schema:
-            type: string
-            enum:
-              - LDO
-              - all
+      - name: "organism"
+        in: "query"
+        description: "NCBI taxon id for PANTHER supported organisms.  Example 9606\
+          \ for Homo sapiens"
+        required: true
+        type: "string"
+      - name: "refInputList"
+        in: "query"
+        description: "This parameter is optional.  It is used to specify a reference\
+          \ list instead of the default which uses all genes associated with specified\
+          \ organism.  Each identifier to be delimited by newline.  Maximum of 1000\
+          \ Identifiers can be any of the following:  Ensemble gene idenfifier, Ensemble\
+          \ protein identifier, Ensemble transcript identifier, Entrez gene id, gene\
+          \ symbol, NCBI GI, HGNC Id, International protein index id, NCBI UniGene\
+          \ id, UniProt accession, UniProt id"
+        required: false
+        type: "string"
+      - name: "format"
+        in: "query"
+        description: "Speecifies the output type.  Can be set to 'xml' or 'json' or\
+          \ 'html'.  If not specified, then output type is html and system will redirect\
+          \ the browser to PANTHER overrepresentation result page. "
+        required: false
+        type: "string"
+        default: "json"
+      - name: "geneInputList"
+        in: "query"
+        description: "Each identifier to be delimited by newline.  Maximum of 1000\
+          \ Identifiers can be any of the following:  Ensemble gene idenfifier, Ensemble\
+          \ protein identifier, Ensemble transcript identifier, Entrez gene id, gene\
+          \ symbol, NCBI GI, HGNC Id, International protein index id, NCBI UniGene\
+          \ id, UniProt accession, UniProt id"
+        required: true
+        type: "string"
+      - name: "annotDataSet"
+        in: "query"
+        description: "Annoation data set (One of 'GO:0003674' for Gene Ontology Molecular\
+          \ Function, 'GO:0008150' for Gene Ontology Biological Process, 'GO:0005575'\
+          \ for Gene Ontology Cellular component, 'ANNOT_TYPE_ID_PANTHER_GO_SLIM_MF'\
+          \ for PANTHER GO-SLIM molecular function, 'ANNOT_TYPE_ID_PANTHER_GO_SLIM_BP'\
+          \ for PANTHER GO-SLIM biological process, 'ANNOT_TYPE_ID_PANTHER_GO_SLIM_CC'\
+          \ for PANTHER GO-SLIM cellular component, 'ANNOT_TYPE_ID_PANTHER_PC' for\
+          \ PANTHER protein class, 'ANNOT_TYPE_ID_PANTHER_PATHWAY' for PANTHER pathway\
+          \ and 'ANNOT_TYPE_ID_REACTOME_PATHWAY' for reactome pathway"
+        required: true
+        type: "string"
+      - name: "enrichmentTestType"
+        in: "query"
+        description: "This paraemeter specifies the Test type to use for the analysis.\
+          \  This can be either 'fisher' or 'binomial'.  This parameter is optional,\
+          \ if not specified Fisher's exact test will be used"
+        required: false
+        type: "string"
+      - name: "correction"
+        in: "query"
+        description: "This parameter is optional and is only valid if parameter 'enrichmentTestType'\
+          \ is specified as 'binomial.  This parameter has to be set to 'bonferroni'"
+        required: false
+        type: "string"
+      - name: "refOrganism"
+        in: "query"
+        description: "This parameter is optional.  It is valid only if parameter 'refInputList'\
+          \ has been specified.  NCBI taxon id for PANTHER supported organisms.  Example\
+          \ 9606 for Homo sapiens"
+        required: false
+        type: "string"
       responses:
-        '200':
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                properties:
-                  search_type:
-                    type: string
-                  product:
-                    properties:
-                      content:
-                        type: string
-                      version:
-                        type: string
-                  mapping:
-                    properties:
-                      unmapped_ids:
-                        type: array
-                        enum:
-                          - properties:
-                              id:
-                                type: string
-                              organism:
-                                type: string
-                      mapped:
-                        type: array
-                        properties:
-                          id:
-                            type: string
-                          target_gene:
-                            type: string
-                          gene:
-                            type: string
-                          ortholog:
-                            type: string
-                          target_gene_symbol:
-                            type: string
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/OverrepresentationResult"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:834304840864:function:hello/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "#set($response = $input.body) \n{ \n    \"result\"\
+                \ : $response\n}\n"
+        requestParameters:
+          integration.request.querystring.refOrganism: "method.request.querystring.refOrganism"
+          integration.request.querystring.correction: "method.request.querystring.correction"
+          integration.request.querystring.organism: "method.request.querystring.organism"
+          integration.request.querystring.geneInputList: "method.request.querystring.geneInputList"
+          integration.request.querystring.enrichmentTestType: "method.request.querystring.enrichmentTestType"
+          integration.request.querystring.annotDataSet: "method.request.querystring.annotDataSet"
+          integration.request.querystring.format: "method.request.querystring.format"
+          integration.request.querystring.refInputList: "method.request.querystring.refInputList"
+        passthroughBehavior: "never"
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: "#set($params = $input.params()) \n{ \n    \"organism\"\
+            : \"$params.querystring.organism\" \n}\n"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+definitions:
+  OverrepresentationResult:
+    type: "object"
+    properties:
+      search:
+        type: "object"
+        properties:
+          search_type:
+            type: "string"
+      test_type:
+        type: "string"
+      correction:
+        type: "string"
+      annotDataSet:
+        type: "string"
+      tool_release_date:
+        type: "string"
+      data_version_release:
+        type: "string"
+      reference:
+        type: "object"
+        properties:
+          organism:
+            type: "string"
+          mapped_count:
+            type: "integer"
+          mapped_id:
+            type: "array"
+            items:
+              type: "string"
+          unmapped_count:
+            type: "integer"
+          unmapped_id:
+            type: "array"
+            items:
+              type: "string"
+      input_list:
+        type: "object"
+        properties:
+          organism:
+            type: "string"
+          mapped_count:
+            type: "integer"
+          mapped_id:
+            type: "array"
+            items:
+              type: "string"
+          unmapped_count:
+            type: "integer"
+          unmapped_id:
+            type: "array"
+            items:
+              type: "string"
+      result:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            pValue:
+              type: "number"
+            expected:
+              type: "integer"
+            number_in_list:
+              type: "integer"
+            plus_minus:
+              type: "string"
+            number_in_reference:
+              type: "integer"
+            term:
+              type: "object"
+              properties:
+                id:
+                  type: "string"
+                label:
+                  type: "string"
+    title: "OverrepresentationResult"
+x-amazon-apigateway-documentation:
+  version: "v.01"
+  createdDate: "2018-04-13T19:51:43Z"
+  documentationParts:
+  - location:
+      type: "METHOD"
+      path: "/services/overrepresentation"
+      method: "GET"
+    properties:
+      description: "Returning the result of an enrichment analysis"
+  - location:
+      type: "QUERY_PARAMETER"
+      path: "/services/overrepresentation"
+      method: "GET"
+      name: "annotDataSet"
+    properties:
+      description: "Annoation data set (One of 'GO:0003674' for Gene Ontology Molecular\
+        \ Function, 'GO:0008150' for Gene Ontology Biological Process, 'GO:0005575'\
+        \ for Gene Ontology Cellular component, 'ANNOT_TYPE_ID_PANTHER_GO_SLIM_MF'\
+        \ for PANTHER GO-SLIM molecular function, 'ANNOT_TYPE_ID_PANTHER_GO_SLIM_BP'\
+        \ for PANTHER GO-SLIM biological process, 'ANNOT_TYPE_ID_PANTHER_GO_SLIM_CC'\
+        \ for PANTHER GO-SLIM cellular component, 'ANNOT_TYPE_ID_PANTHER_PC' for PANTHER\
+        \ protein class, 'ANNOT_TYPE_ID_PANTHER_PATHWAY' for PANTHER pathway and 'ANNOT_TYPE_ID_REACTOME_PATHWAY'\
+        \ for reactome pathway"
+  - location:
+      type: "QUERY_PARAMETER"
+      path: "/services/overrepresentation"
+      method: "GET"
+      name: "correction"
+    properties:
+      description: "This parameter is optional and is only valid if parameter 'enrichmentTestType'\
+        \ is specified as 'binomial.  This parameter has to be set to 'bonferroni'"
+  - location:
+      type: "QUERY_PARAMETER"
+      path: "/services/overrepresentation"
+      method: "GET"
+      name: "enrichmentTestType"
+    properties:
+      description: "This paraemeter specifies the Test type to use for the analysis.\
+        \  This can be either 'fisher' or 'binomial'.  This parameter is optional,\
+        \ if not specified Fisher's exact test will be used"
+  - location:
+      type: "QUERY_PARAMETER"
+      path: "/services/overrepresentation"
+      method: "GET"
+      name: "format"
+    properties:
+      description: "Speecifies the output type.  Can be set to 'xml' or 'json' or\
+        \ 'html'.  If not specified, then output type is html and system will redirect\
+        \ the browser to PANTHER overrepresentation result page. "
+  - location:
+      type: "QUERY_PARAMETER"
+      path: "/services/overrepresentation"
+      method: "GET"
+      name: "geneInputList"
+    properties:
+      description: "Each identifier to be delimited by newline.  Maximum of 1000 Identifiers\
+        \ can be any of the following:  Ensemble gene idenfifier, Ensemble protein\
+        \ identifier, Ensemble transcript identifier, Entrez gene id, gene symbol,\
+        \ NCBI GI, HGNC Id, International protein index id, NCBI UniGene id, UniProt\
+        \ accession, UniProt id"
+  - location:
+      type: "QUERY_PARAMETER"
+      path: "/services/overrepresentation"
+      method: "GET"
+      name: "organism"
+    properties:
+      description: "NCBI taxon id for PANTHER supported organisms.  Example 9606 for\
+        \ Homo sapiens"
+  - location:
+      type: "QUERY_PARAMETER"
+      path: "/services/overrepresentation"
+      method: "GET"
+      name: "refInputList"
+    properties:
+      description: "This parameter is optional.  It is used to specify a reference\
+        \ list instead of the default which uses all genes associated with specified\
+        \ organism.  Each identifier to be delimited by newline.  Maximum of 1000\
+        \ Identifiers can be any of the following:  Ensemble gene idenfifier, Ensemble\
+        \ protein identifier, Ensemble transcript identifier, Entrez gene id, gene\
+        \ symbol, NCBI GI, HGNC Id, International protein index id, NCBI UniGene id,\
+        \ UniProt accession, UniProt id"
+  - location:
+      type: "QUERY_PARAMETER"
+      path: "/services/overrepresentation"
+      method: "GET"
+      name: "refOrganism"
+    properties:
+      description: "This parameter is optional.  It is valid only if parameter 'refInputList'\
+        \ has been specified.  NCBI taxon id for PANTHER supported organisms.  Example\
+        \ 9606 for Homo sapiens"
